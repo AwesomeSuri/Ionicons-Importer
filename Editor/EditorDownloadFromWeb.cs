@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 
-namespace RGP.Utils.Editor
+namespace Editor
 {
     /// <summary>
     /// https://blog.cyberiansoftware.com.ar/post/149707644965/web-requests-from-unity-editor

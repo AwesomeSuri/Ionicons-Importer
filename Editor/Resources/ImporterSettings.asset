@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddd6bf2a9bcca034584098a5aa3b67cf, type: 3}
-  m_Name: ImporterSettings
+  m_Name: 
   m_EditorClassIdentifier: 
-  searchFilter: ape
+  searchFilter: 
   graphicType: 1
   imageAmount: 8
-  currentPage: 1
-  selectedSprites:
-  - {fileID: 3286163911610860551, guid: 30d94eac31ef1974aa3fa62cbd5d45af, type: 3}
-  currentDeselectionPage: 1
-  targetPath: F:/Unity/Test/SVG Importer/Assets/Resources/Ionicons/PNG
-  resolution: 4096
-  antiAliasing: 1
+  currentPage: 0
+  selectedSprites: []
+  currentDeselectionPage: 0
+  targetPath: 
+  resolution: 64
+  antiAliasing: 4
   deleteSvgFolder: 1
   unloadVectorGraphicPackage: 1

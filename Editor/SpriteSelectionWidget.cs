@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace RGP.Ionicons.Editor
+namespace Editor
 {
     /// <summary>
     /// Taken from com.unity.2d.animation package

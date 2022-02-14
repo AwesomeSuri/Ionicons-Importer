@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace RGP.Ionicons.Editor
+namespace Editor
 {
     public static class SvgSearcher
     {
-        public static string[] GetFileNames(string root, string searchFilter, string graphicType)
+        public static string[] GetFileNames(string root, string searchFilter, string graphicType, bool returnAll = false)
         {
             string[] names = Directory.GetFiles(root);
 
@@ -18,6 +18,12 @@ namespace RGP.Ionicons.Editor
                 var name = Path.GetFileName(n);
                 var split = name.Split('.');
                 name = split[0];
+
+                if (returnAll)
+                {
+                    filteredFiles.Add(name);
+                    continue;
+                }
                 
                 var match = true;
                 string lowerCase;

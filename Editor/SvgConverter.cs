@@ -1,11 +1,10 @@
 using System;
 using System.IO;
-using Unity.VectorGraphics;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RGP.Ionicons.Editor
+namespace Editor
 {
     public static class SvgConverter
     {

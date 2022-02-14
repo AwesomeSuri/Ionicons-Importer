@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RGP.Utils;
-using RGP.Utils.Editor;
-using RGP.Utils.Graphics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RGP.Ionicons.Editor
+namespace Editor
 {
     public class Importer : EditorWindow
     {
@@ -234,7 +231,7 @@ namespace RGP.Ionicons.Editor
             EditorGUILayout.LabelField($"=> Resolution: {_importerSettings.resolution}");
             EditorGUI.indentLevel--;
 
-            // setup resolution
+            // setup antiAliasing
             exp = Mathf.FloorToInt(Mathf.Log(_importerSettings.antiAliasing, 2));
             exp = EditorGUILayout.IntSlider("AntiAliasing Exponent", exp, 0, 3);
             _importerSettings.antiAliasing = Mathf.FloorToInt(Mathf.Pow(2, exp));
@@ -244,7 +241,7 @@ namespace RGP.Ionicons.Editor
 
             // button
             var buttonText = _importerSettings.selectedSprites.Count == 0 ? "Nothing selected" :
-                invalidLocation ? "Invalid Location" : "Convert";
+                invalidLocation ? "Invalid Location" : "Convert selected";
             var readyToConvert = !invalidLocation && _importerSettings.selectedSprites.Count > 0;
             GUI.enabled = readyToConvert;
             if (GUILayout.Button(buttonText))
@@ -255,12 +252,13 @@ namespace RGP.Ionicons.Editor
                 _importerSettings.selectedSprites = _importerSettings.selectedSprites.OrderBy(s => s.name).ToList();
                 foreach (var sprite in _importerSettings.selectedSprites)
                 {
-                    if(sprite.name.Length > "Sprite".Length)
+                    if (sprite.name.Length > "Sprite".Length)
                     {
                         var last = sprite.name.Substring(sprite.name.Length - "Sprite".Length);
                         if (last.Equals("Sprite"))
                             sprite.name = sprite.name.Substring(0, sprite.name.Length - last.Length);
                     }
+
                     SvgConverter.ConvertToPNG(
                         sprite,
                         _importerSettings.resolution,
@@ -273,6 +271,55 @@ namespace RGP.Ionicons.Editor
             }
 
             GUI.enabled = true;
+
+            // convert all
+            _importerSettings.showConvertAll =
+                EditorGUILayout.Toggle("Show convert all", _importerSettings.showConvertAll);
+            if (_importerSettings.showConvertAll)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.HelpBox(
+                    "\"Convert all\" will convert every file in \"Assets/Resources/Ionicons/SVG\" into PNG files.\n" +
+                    "This process can take a while depending on the file amount.", MessageType.Warning);
+
+                buttonText = invalidLocation ? "Invalid Location" : "Convert all";
+                GUI.enabled = !invalidLocation;
+                if (GUILayout.Button(buttonText))
+                {
+                    GUIUtility.keyboardControl = 0;
+                    GUIUtility.hotControl = 0;
+
+                    result = SvgSearcher.GetFileNames(
+                        ToGlobalPath(SvgLocation),
+                        _importerSettings.searchFilter,
+                        _importerSettings.graphicType.ToString(),
+                        true);
+
+                    foreach (var n in result)
+                    {
+                        var sprite = Resources.Load<Sprite>(Path.Combine(SvgLocation, n));
+
+                        if (sprite.name.Length > "Sprite".Length)
+                        {
+                            var last = sprite.name.Substring(sprite.name.Length - "Sprite".Length);
+                            if (last.Equals("Sprite"))
+                                sprite.name = sprite.name.Substring(0, sprite.name.Length - last.Length);
+                        }
+
+                        SvgConverter.ConvertToPNG(
+                            sprite,
+                            _importerSettings.resolution,
+                            _importerSettings.antiAliasing,
+                            _importerSettings.targetPath,
+                            ColorTextureToWhite.ColorTexture);
+                    }
+
+                    AssetDatabase.Refresh();
+                }
+
+                GUI.enabled = true;
+                EditorGUI.indentLevel--;
+            }
 
             EditorGUILayout.EndVertical();
         }
@@ -352,29 +399,45 @@ namespace RGP.Ionicons.Editor
 
         private static void CloseImporter()
         {
-            EditorGUILayout.LabelField("3. Close Importer (optional)", _headerStyle);
+            EditorGUILayout.LabelField("3. Delete SVGs (recommended if done)", _headerStyle);
             EditorGUILayout.Space();
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            _importerSettings.deleteSvgFolder =
-                EditorGUILayout.ToggleLeft("Delete SVG Folder", _importerSettings.deleteSvgFolder);
-            if (_importerSettings.deleteSvgFolder)
-            {
-                EditorGUI.indentLevel++;
-                EditorGUILayout.HelpBox("The folder \"Assets/Resources/" + SvgLocation +
-                                        "\" and all its content will be deleted." +
-                                        "Make sure you don't need anything in there.", MessageType.Warning);
-                EditorGUI.indentLevel--;
+            EditorGUILayout.HelpBox("All files in folder \"Assets/Resources/" + SvgLocation +
+                                    "\" will be deleted.\n" +
+                                    "Make sure you don't need anything in there.\n" +
+                                    "To get back the SVGs you need to reimport them in Step 1.", MessageType.Warning);
+            EditorGUILayout.HelpBox("It is recommended to remove the VectorGraphics package when you're done, " +
+                                    "because the package is still experimental and not needed " +
+                                    "if you don't work with SVG files directly.\n" +
+                                    "Remove it manually through the Package Manager " +
+                                    "AFTER you have removed the Ionicons Importer package.", MessageType.Info);
 
-                _importerSettings.unloadVectorGraphicPackage =
-                    EditorGUILayout.ToggleLeft("Unload Vector Graphics Package",
-                        _importerSettings.unloadVectorGraphicPackage);
-                if (_importerSettings.unloadVectorGraphicPackage)
+            if (GUILayout.Button("Delete SVG Content"))
+            {
+                var globalPath = ToGlobalPath(SvgLocation);
+                var files = Directory.GetFiles(globalPath);
+                foreach (var file in files)
                 {
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.HelpBox("The package \"" + SvgLocation + "\" will be removed from this project." +
-                                            "Make sure you don't depend on it somewhere else.", MessageType.Warning);
-                    EditorGUI.indentLevel--;
+                    File.Delete(file);
+                }
+
+                AssetDatabase.Refresh();
+                Directory.Delete(globalPath, true);
+                AssetDatabase.Refresh();
+
+                globalPath = ToGlobalPath(IoniconsRoot);
+                if (Directory.GetFiles(globalPath).Length == 0)
+                {
+                    Directory.Delete(globalPath, true);
+                    AssetDatabase.Refresh();
+
+                    globalPath = Application.dataPath + "/Resources";
+                    if (Directory.GetFiles(globalPath).Length == 0)
+                    {
+                        Directory.Delete(globalPath, true);
+                        AssetDatabase.Refresh();
+                    }
                 }
             }
 

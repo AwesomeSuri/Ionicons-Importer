@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RGP.Ionicons.Editor
+namespace Editor
 {
     public enum GraphicType
     {
@@ -10,7 +10,6 @@ namespace RGP.Ionicons.Editor
         Sharp
     }
     
-    [CreateAssetMenu(fileName = "ImporterSettings", menuName = "Ionicons Importer/ImporterSettings")]
     public class ImporterSettings : ScriptableObject
     {
         public string searchFilter;
@@ -24,8 +23,7 @@ namespace RGP.Ionicons.Editor
         public int resolution;
         public int antiAliasing;
 
-        public bool deleteSvgFolder;
-        public bool unloadVectorGraphicPackage;
+        public bool showConvertAll;
 
         public ImporterSettings()
         {
@@ -37,15 +35,14 @@ namespace RGP.Ionicons.Editor
             searchFilter = string.Empty;
             graphicType = GraphicType.Filled;
             imageAmount = 8;
-            currentPage = 0;
+            currentPage = 1;
             
             targetPath = string.Empty;
-            currentDeselectionPage = 0;
+            currentDeselectionPage = 1;
             resolution = 64;
             antiAliasing = 4;
-            
-            deleteSvgFolder = true;
-            unloadVectorGraphicPackage = true;
+
+            showConvertAll = false;
         }
     }
 }

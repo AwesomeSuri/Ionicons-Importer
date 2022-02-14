@@ -2,7 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using MiscUtil.IO;
 
-namespace RGP.Utils
+namespace Editor
 {
     /// <summary>
     /// https://forum.unity.com/threads/extracting-zip-files.472537/

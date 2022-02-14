@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace RGP.Utils.Graphics
+namespace Editor
 {
     public static class ColorTextureToWhite
     {
         private const string ShaderName = "WhiteShader";
-        
+
         private static ComputeShader _computeShader;
         private static int _kernel;
 
@@ -17,7 +17,7 @@ namespace RGP.Utils.Graphics
                 _computeShader = Resources.Load<ComputeShader>(ShaderName);
                 _kernel = _computeShader.FindKernel("CSMain");
             }
-            
+
             // prepare texture for coloring
             var result = new RenderTexture(original.width, original.height, 1)
             {
@@ -30,7 +30,7 @@ namespace RGP.Utils.Graphics
             _computeShader.SetTexture(_kernel, "Result", result);
 
             // run shader
-            _computeShader.Dispatch(_kernel, original.width, original.height, 1);
+            _computeShader.Dispatch(_kernel, Mathf.Max(1, original.width / 16), Mathf.Max(1, original.height / 16), 1);
 
             // read from result
             RenderTexture.active = result;
