@@ -1,0 +1,23 @@
+{
+  "name": "com.rgp.ioniconsimporter",
+  "version": "1.0.0",
+  "displayName": "Ionicons Importer",
+  "description": "Import free UI Icons from Ionic.io and convert them to PNG.\nIt is required to have Unity's Vector Graphics package.",
+  "unity": "2021.1",
+  "unityRelease": "2f1",
+  "dependencies": {
+    "com.unity.vectorgraphics": "2.0.0-preview.18"
+  },
+  "keywords": [
+    "UI",
+    "Icon",
+    "Importer",
+    "Ionicons"
+  ],
+  "author": {
+    "name": "Akbar Suriaganda",
+    "email": "akbar.suriaganda@gmail.com",
+    "url": ""
+  },
+  "type": "tool"
+}

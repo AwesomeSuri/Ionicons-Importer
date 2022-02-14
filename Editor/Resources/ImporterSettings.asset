@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd6bf2a9bcca034584098a5aa3b67cf, type: 3}
+  m_Name: ImporterSettings
+  m_EditorClassIdentifier: 
+  searchFilter: ape
+  graphicType: 1
+  imageAmount: 8
+  currentPage: 1
+  selectedSprites:
+  - {fileID: 3286163911610860551, guid: 30d94eac31ef1974aa3fa62cbd5d45af, type: 3}
+  currentDeselectionPage: 1
+  targetPath: F:/Unity/Test/SVG Importer/Assets/Resources/Ionicons/PNG
+  resolution: 4096
+  antiAliasing: 1
+  deleteSvgFolder: 1
+  unloadVectorGraphicPackage: 1
